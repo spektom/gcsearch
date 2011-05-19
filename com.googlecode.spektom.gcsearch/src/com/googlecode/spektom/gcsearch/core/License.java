@@ -1,4 +1,4 @@
-package com.googlecode.spektom.gcsearch;
+package com.googlecode.spektom.gcsearch.core;
 
 public enum License {
 

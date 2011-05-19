@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Google Code Search Plug-In
 Bundle-SymbolicName: com.googlecode.spektom.gcsearch;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.googlecode.spektom.gcsearch.Activator
+Bundle-Activator: com.googlecode.spektom.gcsearch.GCActivator
 Bundle-Vendor: Michael Spector
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,

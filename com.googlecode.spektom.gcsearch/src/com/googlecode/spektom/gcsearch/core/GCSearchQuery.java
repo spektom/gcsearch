@@ -1,4 +1,4 @@
-package com.googlecode.spektom.gcsearch;
+package com.googlecode.spektom.gcsearch.core;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +16,7 @@ import org.eclipse.search.ui.ISearchResult;
 import com.google.gdata.client.codesearch.CodeSearchService;
 import com.google.gdata.data.codesearch.CodeSearchFeed;
 import com.google.gdata.util.ServiceException;
+import com.googlecode.spektom.gcsearch.GCActivator;
 
 public class GCSearchQuery implements ISearchQuery {
 
@@ -25,6 +26,7 @@ public class GCSearchQuery implements ISearchQuery {
 
 	public GCSearchQuery(GCQueryParams params) {
 		this.params = params;
+		this.result = new GCSearchResult(this);
 	}
 
 	public IStatus run(IProgressMonitor monitor)
@@ -65,7 +67,7 @@ public class GCSearchQuery implements ISearchQuery {
 			URL feedUrl = new URL(urlBuf.toString());
 			CodeSearchFeed resultFeed = gcService.getFeed(feedUrl,
 					CodeSearchFeed.class);
-			result = new GCSearchResult(this, resultFeed);
+			result.setMatches(resultFeed);
 
 		} catch (MalformedURLException e) {
 			// Must not happen
@@ -75,7 +77,7 @@ public class GCSearchQuery implements ISearchQuery {
 			exception = e;
 		}
 		if (exception != null) {
-			return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+			return new Status(IStatus.ERROR, GCActivator.PLUGIN_ID,
 					"An error has occurred while searching for code", exception);
 		}
 		return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
@@ -95,6 +97,10 @@ public class GCSearchQuery implements ISearchQuery {
 
 	public ISearchResult getSearchResult() {
 		return result;
+	}
+
+	public GCQueryParams getParams() {
+		return params;
 	}
 
 	private static String encode(String str) {

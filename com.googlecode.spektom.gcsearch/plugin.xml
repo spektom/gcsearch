@@ -4,12 +4,23 @@
    <extension
          point="org.eclipse.search.searchPages">
       <page
-            class="com.googlecode.spektom.gcsearch.GCSearchPage"
+            class="com.googlecode.spektom.gcsearch.ui.GCSearchPage"
+            enabled="true"
             extensions="*"
-            icon="icons/obj16/google.png"
+            icon="icons/full/obj16/google.png"
             id="com.googlecode.spektom.gcsearch.GCSearchPage"
             label="Google Code">
       </page>
+   </extension>
+   <extension
+         point="org.eclipse.search.searchResultViewPages">
+      <viewPage
+            class="com.googlecode.spektom.gcsearch.ui.GCSearchResultPage"
+            icon="icons/full/obj16/google.png"
+            id="com.googlecode.spektom.gcsearch.GCSearchResultPage"
+            label="Code Search Results"
+            searchResultClass="com.googlecode.spektom.gcsearch.core.GCSearchResult">
+      </viewPage>
    </extension>
 
 </plugin>

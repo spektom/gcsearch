@@ -1,4 +1,4 @@
-package com.googlecode.spektom.gcsearch;
+package com.googlecode.spektom.gcsearch.ui;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,11 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+
+import com.googlecode.spektom.gcsearch.core.GCQueryParams;
+import com.googlecode.spektom.gcsearch.core.GCSearchQuery;
+import com.googlecode.spektom.gcsearch.core.Language;
+import com.googlecode.spektom.gcsearch.core.License;
 
 public class GCSearchPage extends DialogPage implements ISearchPage {
 
@@ -77,7 +82,7 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 		Label searchLabel = new Label(composite, SWT.NONE);
 		searchLabel.setForeground(searchLabel.getDisplay().getSystemColor(
 				SWT.COLOR_DARK_GREEN));
-		searchLabel.setText("Search public &source code:");
+		searchLabel.setText("Search public source code:");
 		FontData[] fds = searchLabel.getFont().getFontData();
 		for (FontData fd : fds) {
 			fd.setStyle(fd.getStyle() | SWT.BOLD);

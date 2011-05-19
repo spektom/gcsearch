@@ -6,12 +6,12 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class GCActivator extends AbstractUIPlugin {
 
 	public static final String PLUGIN_ID = "com.googlecode.spektom.gcsearch"; //$NON-NLS-1$
-	private static Activator plugin;
+	private static GCActivator plugin;
 
-	public Activator() {
+	public GCActivator() {
 	}
 
 	public void start(BundleContext context) throws Exception {
@@ -29,7 +29,7 @@ public class Activator extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static GCActivator getDefault() {
 		return plugin;
 	}
 }

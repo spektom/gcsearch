@@ -1,4 +1,4 @@
-package com.googlecode.spektom.gcsearch;
+package com.googlecode.spektom.gcsearch.core;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 
