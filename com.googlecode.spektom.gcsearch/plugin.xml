@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.search.searchPages">
+      <page
+            class="com.googlecode.spektom.gcsearch.GCSearchPage"
+            extensions="*"
+            icon="icons/obj16/google.png"
+            id="com.googlecode.spektom.gcsearch.GCSearchPage"
+            label="Google Code">
+      </page>
+   </extension>
+
+</plugin>
