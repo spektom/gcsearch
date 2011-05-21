@@ -12,8 +12,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.WorkbenchImages;
+import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.osgi.framework.Bundle;
 
 /**
@@ -107,15 +111,30 @@ public class GCPluginImages {
 		String key = "FILE_" + fileExt;
 		Image image = PLUGIN_REGISTRY.get(key);
 		if (image == null) {
-			Program program = Program.findProgram(fileExt);
-			ImageData imageData = (program == null ? null : program
-					.getImageData());
-			if (imageData != null) {
-				image = new Image(Display.getCurrent(), imageData);
-				PLUGIN_REGISTRY.put(key, image);
+			try {
+				IEditorDescriptor editorDescriptor = IDE
+						.getEditorDescriptor("test." + fileExt);
+				if (editorDescriptor != null
+						&& editorDescriptor.isInternal()
+						&& !IDEWorkbenchPlugin.DEFAULT_TEXT_EDITOR_ID
+								.equals(editorDescriptor.getId())) {
+					image = editorDescriptor.getImageDescriptor().createImage();
+				}
+			} catch (PartInitException e) {
 			}
+			if (image == null) {
+				Program program = Program.findProgram(fileExt);
+				ImageData imageData = (program == null ? null : program
+						.getImageData());
+				if (imageData != null) {
+					image = new Image(Display.getCurrent(), imageData);
+				}
+			}
+			if (image == null) {
+				image = WorkbenchImages.getImage(ISharedImages.IMG_OBJ_FILE);
+			}
+			PLUGIN_REGISTRY.put(key, image);
 		}
-		return image == null ? WorkbenchImages
-				.getImage(ISharedImages.IMG_OBJ_FILE) : image;
+		return image;
 	}
 }

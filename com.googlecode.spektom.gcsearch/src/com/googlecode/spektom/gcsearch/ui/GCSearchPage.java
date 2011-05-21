@@ -2,25 +2,26 @@ package com.googlecode.spektom.gcsearch.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceColors;
+import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.search.internal.core.text.PatternConstructor;
 import org.eclipse.search.internal.ui.SearchPlugin;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -48,6 +49,7 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 	private ISearchPageContainer container;
 	private boolean firstTime = true;
 	private Combo patternCombo;
+	private CLabel statusLabel;
 	private Button caseSensitiveCheckbox;
 	private Combo languageCombo;
 	private Combo licenseCombo;
@@ -79,22 +81,7 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 		compositeData.grabExcessVerticalSpace = true;
 		composite.setLayoutData(compositeData);
 
-		Label searchLabel = new Label(composite, SWT.NONE);
-		searchLabel.setForeground(searchLabel.getDisplay().getSystemColor(
-				SWT.COLOR_DARK_GREEN));
-		searchLabel.setText("Search public source code:");
-		FontData[] fds = searchLabel.getFont().getFontData();
-		for (FontData fd : fds) {
-			fd.setStyle(fd.getStyle() | SWT.BOLD);
-		}
-		final Font boldFont = new Font(searchLabel.getDisplay(), fds);
-		searchLabel.setFont(boldFont);
-		searchLabel.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				e.widget.removeDisposeListener(this);
-				boldFont.dispose();
-			}
-		});
+		new Label(composite, SWT.NONE).setText("Search public source code:");
 
 		Composite patternComposite = new Composite(composite, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -122,8 +109,8 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 		caseSensitiveCheckbox = new Button(patternComposite, SWT.CHECK);
 		caseSensitiveCheckbox.setText("&Case sensitive");
 
-		new Label(patternComposite, SWT.NONE)
-				.setText(" (Search via regular expression, e.g. ^java/.*\\.java$)");
+		statusLabel = new CLabel(patternComposite, SWT.LEAD);
+		statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Group searchOptionsGroup = new Group(composite, SWT.NONE);
 		searchOptionsGroup.setText("Search &options:");
@@ -180,6 +167,36 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 		return this.container;
 	}
 
+	private boolean validateRegex() {
+		try {
+			PatternConstructor.createPattern(patternCombo.getText(),
+					caseSensitiveCheckbox.getSelection(), true);
+		} catch (PatternSyntaxException e) {
+			String locMessage = e.getLocalizedMessage();
+			int i = 0;
+			while (i < locMessage.length()
+					&& "\n\r".indexOf(locMessage.charAt(i)) == -1) { //$NON-NLS-1$
+				i++;
+			}
+			setError(locMessage.substring(0, i));
+			return false;
+		}
+		setError(null);
+		return true;
+	}
+
+	private void setError(String message) {
+		if (message != null) {
+			statusLabel.setText(message);
+			statusLabel.setForeground(JFaceColors.getErrorText(statusLabel
+					.getDisplay()));
+		} else {
+			statusLabel
+					.setText(" (Search via regular expression, e.g. ^java/.*\\.java$)");
+			statusLabel.setForeground(null);
+		}
+	}
+
 	public void setVisible(boolean visible) {
 		if (visible) {
 			if (firstTime) {
@@ -206,7 +223,8 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 				patternCombo.setItems(getPreviousPatterns());
 				String selectedText = getCurrentSelection();
 				if (selectedText != null) {
-					patternCombo.setText(selectedText);
+					patternCombo.setText(FindReplaceDocumentAdapter
+							.escapeForRegExPattern(selectedText));
 				} else {
 					patternCombo.select(0);
 				}
@@ -235,7 +253,8 @@ public class GCSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private void updateOKStatus() {
-		getContainer().setPerformActionEnabled(true);
+		boolean regexStatus = validateRegex();
+		getContainer().setPerformActionEnabled(regexStatus);
 	}
 
 	private IEditorPart getActiveEditor() {
