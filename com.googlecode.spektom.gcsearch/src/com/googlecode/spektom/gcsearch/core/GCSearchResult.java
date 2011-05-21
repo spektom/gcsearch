@@ -68,13 +68,16 @@ public class GCSearchResult implements ISearchResult, IGCMatchContainer {
 				}
 				entries.add(entry);
 			}
-			packages = new GCPackage[byPackage.size()];
-			int i = 0;
+			List<GCPackage> l = new LinkedList<GCPackage>();
 			for (Entry<String, List<CodeSearchEntry>> e : byPackage.entrySet()) {
 				List<CodeSearchEntry> entries = e.getValue();
-				packages[i++] = new GCPackage(this, e.getKey(),
+				GCPackage p = new GCPackage(this, e.getKey(),
 						entries.toArray(new CodeSearchEntry[entries.size()]));
+				if (p.getMatchCount() > 0) {
+					l.add(p);
+				}
 			}
+			packages = l.toArray(new GCPackage[l.size()]);
 		}
 		return packages;
 	}

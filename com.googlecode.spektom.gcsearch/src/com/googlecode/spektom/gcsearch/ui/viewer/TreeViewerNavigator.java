@@ -35,6 +35,7 @@ public class TreeViewerNavigator implements INavigate {
 		}
 		if (nextItem != null) {
 			internalSetSelection(nextItem);
+			viewer.setExpandedState(nextItem.getData(), true);
 		}
 	}
 

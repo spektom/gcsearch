@@ -43,7 +43,7 @@ public class GCFile implements IGCMatchContainer {
 	}
 
 	public int getMatchCount() {
-		return entry.getMatches().size();
+		return getMatches().length;
 	}
 
 	public GCMatch[] getMatches() {
@@ -71,14 +71,22 @@ public class GCFile implements IGCMatchContainer {
 	public String getSource() {
 		if (source == null) {
 			String packageName = getPackage().getName();
-			if (packageName.toLowerCase().startsWith("http://")) {
-				String url;
-				if (packageName.startsWith("http://hg.")) {
-					// Mercurial
-					url = packageName + "/raw-file/tip/" + getName();
-				} else {
-					url = packageName + "/" + getName();
-				}
+			String url;
+			if (packageName.startsWith("http://hg.")) {
+				// Mercurial
+				url = packageName + "/raw-file/tip/" + getName();
+
+			} else if (packageName.startsWith("git://github.com")) {
+				packageName = packageName.replaceFirst("git://", "http://");
+				// cut last '.git'
+				packageName = packageName
+						.substring(0, packageName.length() - 4);
+				url = packageName + "/raw/master/" + getName();
+
+			} else {
+				url = packageName + "/" + getName();
+			}
+			if (url.startsWith("http://")) {
 				try {
 					source = HttpUtils.getString(url);
 				} catch (IOException e) {
