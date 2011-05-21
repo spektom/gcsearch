@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.googlecode.spektom.gcsearch"
-      label="Google Code Search Feature"
+      label="Google Code Search"
       version="1.0.0.qualifier"
       provider-name="Michael Spector">
 
