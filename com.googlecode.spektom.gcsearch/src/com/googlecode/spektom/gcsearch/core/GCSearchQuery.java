@@ -20,7 +20,7 @@ import com.googlecode.spektom.gcsearch.GCActivator;
 
 public class GCSearchQuery implements ISearchQuery {
 
-	private static final int MAX_RESULTS = 100;
+	private static final int MAX_RESULTS = 500;
 	private GCQueryParams params;
 	private GCSearchResult result;
 
