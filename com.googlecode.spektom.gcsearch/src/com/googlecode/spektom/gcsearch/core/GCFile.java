@@ -1,7 +1,9 @@
 package com.googlecode.spektom.gcsearch.core;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.gdata.data.codesearch.CodeSearchEntry;
 import com.google.gdata.data.codesearch.Match;
@@ -47,11 +49,16 @@ public class GCFile implements IGCMatchContainer {
 	public GCMatch[] getMatches() {
 		if (gcMatches == null) {
 			List<Match> matches = entry.getMatches();
-			gcMatches = new GCMatch[matches.size()];
-			int i = 0;
+			List<GCMatch> l = new LinkedList<GCMatch>();
+
+			Pattern p = Pattern.compile(getPackage().getResult().getQuery()
+					.getParams().getPattern());
 			for (Match m : matches) {
-				gcMatches[i++] = new GCMatch(this, m);
+				if (p.matcher(m.getLineText().getPlainText()).find()) {
+					l.add(new GCMatch(this, m));
+				}
 			}
+			gcMatches = l.toArray(new GCMatch[l.size()]);
 		}
 		return gcMatches;
 	}

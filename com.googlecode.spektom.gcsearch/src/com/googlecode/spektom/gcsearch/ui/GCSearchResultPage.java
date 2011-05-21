@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.DefaultLineTracker;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
@@ -63,13 +64,14 @@ import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.editors.text.NonExistingFileEditorInput;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.googlecode.spektom.gcsearch.GCPluginImages;
 import com.googlecode.spektom.gcsearch.core.GCFile;
 import com.googlecode.spektom.gcsearch.core.GCMatch;
 import com.googlecode.spektom.gcsearch.core.GCPackage;
@@ -152,7 +154,9 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 					viewer.setExpandedState(obj, !viewer.getExpandedState(obj));
 				} else if (obj instanceof GCFile) {
 					GCMatch[] matches = ((GCFile) obj).getMatches();
-					showMatch(matches[0], true);
+					if (matches.length > 0) {
+						showMatch(matches[0], true);
+					}
 				} else if (obj instanceof GCMatch) {
 					showMatch((GCMatch) obj, true);
 				}
@@ -376,11 +380,28 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 
 			IFileSystem fileSystem = EFS.getLocalFileSystem();
 			IFileStore fileStore = fileSystem.fromLocalFile(tempFile);
-			NonExistingFileEditorInput input = new NonExistingFileEditorInput(
-					fileStore, currentMatch.getFile().getName());
+			FileStoreEditorInput input = new FileStoreEditorInput(fileStore) {
+				public ImageDescriptor getImageDescriptor() {
+					return new ImageDataImageDescriptor(
+							GCPluginImages.getFileIcon(currentMatch.getFile()
+									.getExtension()));
+				}
+
+				public String getName() {
+					String fileName = currentMatch.getFile().getName();
+					int i = fileName.lastIndexOf('/');
+					if (i != -1) {
+						fileName = fileName.substring(i + 1);
+					}
+					return fileName;
+				}
+
+				public String getToolTipText() {
+					return currentMatch.getFile().getName();
+				}
+			};
 			final IEditorPart editor = IDE.openEditor(getSite().getPage(),
 					input, editorId);
-
 			if (editor instanceof ITextEditor) {
 				((ITextEditor) editor).selectAndReveal(currentOffset,
 						currentLength);
@@ -482,7 +503,7 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 			lineTracker.set(source);
 			try {
 				return lineTracker.getLineInformation(Integer
-						.parseInt(currentMatch.getMatch().getLineNumber()));
+						.parseInt(currentMatch.getMatch().getLineNumber()) - 1);
 			} catch (Exception e) {
 			}
 		}

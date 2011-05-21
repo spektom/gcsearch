@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultListener;
 
@@ -50,7 +49,7 @@ public class GCSearchResult implements ISearchResult, IGCMatchContainer {
 		return GCPluginImages.DESC_OBJ_CODE;
 	}
 
-	public ISearchQuery getQuery() {
+	public GCSearchQuery getQuery() {
 		return query;
 	}
 
