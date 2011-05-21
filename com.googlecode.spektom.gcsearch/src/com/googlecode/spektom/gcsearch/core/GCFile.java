@@ -77,6 +77,12 @@ public class GCFile implements IGCMatchContainer {
 						.substring(0, packageName.length() - 4);
 				url = packageName + "/raw/master/" + getName();
 
+			} else if (packageName.startsWith("git://android.git.kernel.org")) {
+				packageName = "http://android.git.kernel.org/?p="
+						+ packageName.substring("git://android.git.kernel.org/"
+								.length());
+				url = packageName + ";a=blob_plain;f=" + getName();
+
 			} else {
 				url = packageName + "/" + getName();
 			}
