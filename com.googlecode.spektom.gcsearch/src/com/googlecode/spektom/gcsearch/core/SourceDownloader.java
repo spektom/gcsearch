@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.googlecode.spektom.gcsearch.utils.HttpUtils;
+
 /**
  * This class implements site-specific download logic through dirty if-else
  * statements.
@@ -77,10 +79,11 @@ public class SourceDownloader {
 		}
 
 		if (url != null) {
-			if (url.startsWith("http://")) {
+			if (url.startsWith("http://") || url.startsWith("https://")) {
 				try {
 					return HttpUtils.getString(url);
 				} catch (IOException e) {
+					e.printStackTrace();
 					// Couldn't retrieve
 				}
 			}

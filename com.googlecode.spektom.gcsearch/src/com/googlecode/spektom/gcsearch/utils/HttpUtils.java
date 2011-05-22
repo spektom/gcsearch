@@ -1,4 +1,4 @@
-package com.googlecode.spektom.gcsearch.core;
+package com.googlecode.spektom.gcsearch.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 /**
  * Various HTTP client utils
@@ -15,6 +17,15 @@ import org.apache.commons.httpclient.methods.GetMethod;
  * 
  */
 public class HttpUtils {
+
+	static {
+		Protocol.registerProtocol(
+				"https",
+				new Protocol(
+						"https",
+						(ProtocolSocketFactory) new EasySSLProtocolSocketFactory(),
+						443));
+	}
 
 	/**
 	 * Returns response from the given URL as a string
@@ -26,8 +37,12 @@ public class HttpUtils {
 		client.getHttpConnectionManager().getParams()
 				.setConnectionTimeout(10000);
 		HttpMethod method = new GetMethod(url);
-		client.executeMethod(method);
-		return readResponse(method);
+		try {
+			client.executeMethod(method);
+			return readResponse(method);
+		} finally {
+			method.releaseConnection();
+		}
 	}
 
 	public static String readResponse(HttpMethod method) throws IOException {
