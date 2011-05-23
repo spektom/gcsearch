@@ -60,6 +60,7 @@ import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
@@ -241,7 +242,13 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 	}
 
 	public void setInput(ISearchResult result, Object uiState) {
+		GCSearchResult oldInput = this.result;
+		if (oldInput != null) {
+			viewer.setInput(null);
+		}
+
 		this.result = (GCSearchResult) result;
+		viewer.setInput(this.result);
 
 		if (uiState instanceof ISelection) {
 			implicitSelection = true;
@@ -399,6 +406,10 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 				public String getToolTipText() {
 					return currentMatch.getFile().getName();
 				}
+
+				public IPersistableElement getPersistable() {
+					return null;
+				}
 			};
 			final IEditorPart editor = IDE.openEditor(getSite().getPage(),
 					input, editorId);
@@ -551,11 +562,8 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 		public void queryFinished(ISearchQuery query) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
-					if (result != null) {
-						viewer.setInput(result);
-						if (viewer.getSelection().isEmpty()) {
-							navigateNext(true);
-						}
+					if (viewer.getSelection().isEmpty()) {
+						navigateNext(true);
 					}
 					view.updateLabel();
 				}

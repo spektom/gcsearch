@@ -1,0 +1,23 @@
+# These rewrite rules are used for calculating the original URL to the source code.
+# The first rule that matches will be used. At least one rule must exist for any package,
+# in order to put the slash between package name and file path.
+#
+# Format of this file:
+#
+# NAME == VALUE
+#
+# Where: NAME is the package name resulted in a Google Code Search response. 
+# If source code can't be retrieved for some package, set VALUE to empty string.
+#
+
+.*(\.gz|\.bz2|\.tar|\.zip)				==
+(http://hg\..*)							==$1/raw-file/tip/
+git://github\.com/(.*)\.git				==http://github.com/$1/raw/master/
+git://android\.git\.kernel\.org/(.*)	==http://android.git.kernel.org/?p=$1;a=blob_plain;f=
+git://repo\.or\.cz/(.*)					==http://repo.or.cz/w/$1/blob_plain/HEAD:/
+
+cvs :pserver:anonymous@(\w+)\.cvs\.sourceforge\.net:/cvsroot/\w+ \.?(.*)==http://$1.cvs.sourceforge.net/viewvc/$1/$2/
+cvs :pserver:guest@mozdev.org:/cvs \.?(.*)								==http://www.mozdev.org/source/browse/~checkout~/$1/
+
+# Capture everything:
+(.*)==$1/

@@ -1,9 +1,22 @@
 package com.googlecode.spektom.gcsearch.core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+
+import com.googlecode.spektom.gcsearch.GCActivator;
 import com.googlecode.spektom.gcsearch.utils.HttpUtils;
 
 /**
@@ -15,11 +28,64 @@ import com.googlecode.spektom.gcsearch.utils.HttpUtils;
  */
 public class SourceDownloader {
 
-	private static final Pattern SF_CVS = Pattern
-			.compile("cvs :pserver:anonymous@(\\w+)\\.cvs\\.sourceforge.net:/cvsroot/\\w+ (.*)"); //$NON-NLS-1$
+	private static Map<Pattern, String> patterns;
+	static {
+		loadPatterns();
+	}
 
-	private static final Pattern MOZILLA_CVS = Pattern
-			.compile("cvs :pserver:guest@mozdev.org:/cvs (.*)"); //$NON-NLS-1$
+	private static void loadPatterns() {
+		patterns = new LinkedHashMap<Pattern, String>();
+		try {
+			URL url = FileLocator.find(GCActivator.getDefault().getBundle(),
+					new Path("resources/rules.txt"), null);
+			if (url != null) {
+				url = FileLocator.resolve(url);
+
+				BufferedReader r = new BufferedReader(new InputStreamReader(
+						url.openStream()));
+				try {
+					String line;
+					while ((line = r.readLine()) != null) {
+						if (line.startsWith("#")) {
+							continue;
+						}
+						line = line.trim();
+						if (line.length() == 0) {
+							continue;
+						}
+
+						String regex = line;
+						String replacement = "";
+						int i = line.indexOf("==");
+						if (i != -1) {
+							regex = line.substring(0, i);
+							replacement = line.substring(i + 2);
+						}
+						try {
+							patterns.put(Pattern.compile(regex.trim()),
+									replacement.trim());
+						} catch (PatternSyntaxException e) {
+							GCActivator
+									.getDefault()
+									.getLog()
+									.log(new Status(IStatus.WARNING,
+											GCActivator.PLUGIN_ID,
+											"Rule expression can't be compiled: "
+													+ regex));
+						}
+					}
+				} finally {
+					r.close();
+				}
+			}
+		} catch (Exception e) {
+			GCActivator
+					.getDefault()
+					.getLog()
+					.log(new Status(IStatus.ERROR, GCActivator.PLUGIN_ID,
+							"Can't load patterns", e));
+		}
+	}
 
 	/**
 	 * Rerieves file and returns its content.
@@ -34,54 +100,26 @@ public class SourceDownloader {
 		String packageName = file.getPackage().getName();
 		String fileName = file.getName();
 
-		String url = null;
-		Matcher m = null;
-
-		if (packageName.endsWith(".gz") || packageName.endsWith(".bz2")
-				|| packageName.endsWith(".tar") || packageName.endsWith(".zip")) {
-			// Can't retrieve file placed inside of archive.
-
-		} else if (packageName.startsWith("http://hg.")) {
-			// Mercurial
-			url = packageName + "/raw-file/tip/" + fileName;
-
-		} else if (packageName.startsWith("git://github.com")) {
-			packageName = packageName.replaceFirst("git://", "http://");
-			// cut last '.git'
-			packageName = packageName.substring(0, packageName.length() - 4);
-			url = packageName + "/raw/master/" + fileName;
-
-		} else if (packageName.startsWith("git://android.git.kernel.org")) {
-			packageName = "http://android.git.kernel.org/?p="
-					+ packageName.substring("git://android.git.kernel.org/"
-							.length());
-			url = packageName + ";a=blob_plain;f=" + fileName;
-
-		} else if ((m = SF_CVS.matcher(packageName)) != null && m.matches()) {
-			String subDir = m.group(2);
-			if (subDir == ".") {
-				subDir = "";
+		for (Entry<Pattern, String> e : patterns.entrySet()) {
+			Matcher m = e.getKey().matcher(packageName);
+			if (m.matches()) {
+				packageName = m.replaceAll(e.getValue());
+				break;
 			}
-			url = "http://" + m.group(1) + ".cvs.sourceforge.net/viewvc/"
-					+ m.group(1) + "/" + subDir + "/" + fileName;
-
-		} else if ((m = MOZILLA_CVS.matcher(packageName)) != null
-				&& m.matches()) {
-			String subDir = m.group(1);
-			if (subDir == ".") {
-				subDir = "";
-			}
-			url = "http://www.mozdev.org/source/browse/~checkout~/" + subDir
-					+ "/" + fileName;
-
-		} else {
-			url = packageName + "/" + fileName;
 		}
 
-		if (url != null) {
+		if (packageName.length() > 0) {
+			String url = packageName + fileName;
 			if (url.startsWith("http://") || url.startsWith("https://")) {
 				try {
-					return HttpUtils.getString(url);
+					String source = HttpUtils.getString(url);
+
+					// Patch for some git:// Web viewers, that use JavaScript:
+					if (file.getPackage().getName().startsWith("git://")
+							&& source.contains("Generating....</body>")) {
+						source = HttpUtils.getString(url);
+					}
+					return source;
 				} catch (IOException e) {
 					e.printStackTrace();
 					// Couldn't retrieve
