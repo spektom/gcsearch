@@ -22,5 +22,30 @@
             searchResultClass="com.googlecode.spektom.gcsearch.core.GCSearchResult">
       </viewPage>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.search.preferences.SearchPreferencePage"
+            class="com.googlecode.spektom.gcsearch.ui.GCPreferencePage"
+            id="com.googlecode.spektom.gcsearch.ui.GCPreferencePage"
+            name="Google Code">
+         <keywordReference
+               id="com.googlecode.spektom.gcsearch.keywords">
+         </keywordReference>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.keywords">
+      <keyword
+            id="com.googlecode.spektom.gcsearch.keywords"
+            label="search google code source">
+      </keyword>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.googlecode.spektom.gcsearch.Preferences">
+      </initializer>
+   </extension>
 
 </plugin>

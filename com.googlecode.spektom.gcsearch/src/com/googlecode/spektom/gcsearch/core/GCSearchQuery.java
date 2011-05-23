@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
@@ -17,10 +18,10 @@ import com.google.gdata.client.codesearch.CodeSearchService;
 import com.google.gdata.data.codesearch.CodeSearchFeed;
 import com.google.gdata.util.ServiceException;
 import com.googlecode.spektom.gcsearch.GCActivator;
+import com.googlecode.spektom.gcsearch.Preferences;
 
 public class GCSearchQuery implements ISearchQuery {
 
-	private static final int MAX_RESULTS = 500;
 	private GCQueryParams params;
 	private GCSearchResult result;
 
@@ -37,7 +38,9 @@ public class GCSearchQuery implements ISearchQuery {
 		StringBuilder urlBuf = new StringBuilder(
 				"https://www.google.com/codesearch/feeds/search?");
 		urlBuf.append("q=").append(encode(params.getPattern()));
-		urlBuf.append("&max-results=").append(MAX_RESULTS);
+		urlBuf.append("&max-results=").append(
+				Platform.getPreferencesService().getInt(GCActivator.PLUGIN_ID,
+						Preferences.MAX_RESULTS, 0, null));
 
 		// The rest of parameters are not supported :(
 		// http://code.google.com/apis/codesearch/docs/2.0/reference.html#Elements

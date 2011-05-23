@@ -20,7 +20,8 @@ git://repo\.or\.cz/(.*)					==http://repo.or.cz/w/$1/blob_plain/HEAD:/%FILE%
 
 cvs :pserver:anonymous@(\w+)\.cvs\.sourceforge\.net:/cvsroot/\w+ \.?(.*)==http://$1.cvs.sourceforge.net/viewvc/$1/$2/%FILE%
 cvs :pserver:guest@mozdev.org:/cvs \.?(.*)								==http://www.mozdev.org/source/browse/~checkout~/$1/%FILE%
-cvs :pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse \.?(.*)			==http://dev.eclipse.org/viewcvs/viewvc.cgi/$1/%FILE%?view=co
+cvs :pserver:anonymous@dev.eclipse.org:\S+ \.?(.*)						==http://dev.eclipse.org/viewcvs/viewvc.cgi/$1/%FILE%?view=co
+cvs :pserver:anonymous@cvs.olat.org:\S+ \.?(.*)							==http://fisheye.olat.org/browse/~raw,r=HEAD/OLAT/$1/%FILE%
 
 # Capture everything:
 (.*)==$1/%FILE%
