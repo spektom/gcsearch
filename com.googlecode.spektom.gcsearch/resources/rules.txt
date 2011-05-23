@@ -9,15 +9,18 @@
 # Where: NAME is the package name resulted in a Google Code Search response. 
 # If source code can't be retrieved for some package, set VALUE to empty string.
 #
+# Use %FILE% placeholder for specifying file name inside of replacement.
+#
 
 .*(\.gz|\.bz2|\.tar|\.zip)				==
-(http://hg\..*)							==$1/raw-file/tip/
-git://github\.com/(.*)\.git				==http://github.com/$1/raw/master/
-git://android\.git\.kernel\.org/(.*)	==http://android.git.kernel.org/?p=$1;a=blob_plain;f=
-git://repo\.or\.cz/(.*)					==http://repo.or.cz/w/$1/blob_plain/HEAD:/
+(http://hg\..*)							==$1/raw-file/tip/%FILE%
+git://github\.com/(.*)\.git				==http://github.com/$1/raw/master/%FILE%
+git://android\.git\.kernel\.org/(.*)	==http://android.git.kernel.org/?p=$1;a=blob_plain;f=%FILE%
+git://repo\.or\.cz/(.*)					==http://repo.or.cz/w/$1/blob_plain/HEAD:/%FILE%
 
-cvs :pserver:anonymous@(\w+)\.cvs\.sourceforge\.net:/cvsroot/\w+ \.?(.*)==http://$1.cvs.sourceforge.net/viewvc/$1/$2/
-cvs :pserver:guest@mozdev.org:/cvs \.?(.*)								==http://www.mozdev.org/source/browse/~checkout~/$1/
+cvs :pserver:anonymous@(\w+)\.cvs\.sourceforge\.net:/cvsroot/\w+ \.?(.*)==http://$1.cvs.sourceforge.net/viewvc/$1/$2/%FILE%
+cvs :pserver:guest@mozdev.org:/cvs \.?(.*)								==http://www.mozdev.org/source/browse/~checkout~/$1/%FILE%
+cvs :pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse \.?(.*)			==http://dev.eclipse.org/viewcvs/viewvc.cgi/$1/%FILE%?view=co
 
 # Capture everything:
-(.*)==$1/
+(.*)==$1/%FILE%

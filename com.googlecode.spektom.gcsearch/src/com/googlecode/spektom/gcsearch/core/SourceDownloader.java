@@ -97,33 +97,30 @@ public class SourceDownloader {
 	 */
 	public static String download(GCFile file) {
 
-		String packageName = file.getPackage().getName();
-		String fileName = file.getName();
+		String url = file.getPackage().getName();
 
 		for (Entry<Pattern, String> e : patterns.entrySet()) {
-			Matcher m = e.getKey().matcher(packageName);
+			Matcher m = e.getKey().matcher(url);
 			if (m.matches()) {
-				packageName = m.replaceAll(e.getValue());
+				url = m.replaceFirst(e.getValue());
 				break;
 			}
 		}
 
-		if (packageName.length() > 0) {
-			String url = packageName + fileName;
-			if (url.startsWith("http://") || url.startsWith("https://")) {
-				try {
-					String source = HttpUtils.getString(url);
+		url = url.replace("%FILE%", file.getName());
+		if (url.startsWith("http://") || url.startsWith("https://")) {
+			try {
+				String source = HttpUtils.getString(url);
 
-					// Patch for some git:// Web viewers, that use JavaScript:
-					if (file.getPackage().getName().startsWith("git://")
-							&& source.contains("Generating....</body>")) {
-						source = HttpUtils.getString(url);
-					}
-					return source;
-				} catch (IOException e) {
-					e.printStackTrace();
-					// Couldn't retrieve
+				// Patch for some git:// Web viewers, that use JavaScript:
+				if (file.getPackage().getName().startsWith("git://")
+						&& source.contains("Generating....</body>")) {
+					source = HttpUtils.getString(url);
 				}
+				return source;
+			} catch (IOException e) {
+				e.printStackTrace();
+				// Couldn't retrieve
 			}
 		}
 		return null;

@@ -562,6 +562,8 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 		public void queryFinished(ISearchQuery query) {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
+					viewer.refresh();
+
 					if (viewer.getSelection().isEmpty()) {
 						navigateNext(true);
 					}
