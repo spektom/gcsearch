@@ -1,5 +1,7 @@
 package com.googlecode.spektom.gcsearch;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -31,5 +33,17 @@ public class GCActivator extends AbstractUIPlugin {
 	 */
 	public static GCActivator getDefault() {
 		return plugin;
+	}
+
+	public static void log(IStatus status) {
+		getDefault().getLog().log(status);
+	}
+
+	public static void log(String message, Throwable e) {
+		log(new Status(IStatus.ERROR, PLUGIN_ID, message, e));
+	}
+
+	public static void log(String message) {
+		log(new Status(IStatus.ERROR, PLUGIN_ID, message, null));
 	}
 }

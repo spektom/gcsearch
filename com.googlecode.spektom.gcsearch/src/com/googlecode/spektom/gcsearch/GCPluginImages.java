@@ -44,11 +44,31 @@ public class GCPluginImages {
 	public static final String IMG_OBJ_CODE = NAME_PREFIX + "code.png"; //$NON-NLS-1$
 	public static final String IMG_OBJ_PROJECT = NAME_PREFIX + "project.png"; //$NON-NLS-1$
 
+	public static final String IMG_TOOL_ADD = NAME_PREFIX + "add.png"; //$NON-NLS-1$
+	public static final String IMG_TOOL_EDIT = NAME_PREFIX + "edit.png"; //$NON-NLS-1$
+	public static final String IMG_TOOL_DELETE = NAME_PREFIX + "delete.png"; //$NON-NLS-1$
+	public static final String IMG_TOOL_UP = NAME_PREFIX + "up.gif"; //$NON-NLS-1$
+	public static final String IMG_TOOL_DOWN = NAME_PREFIX + "down.gif"; //$NON-NLS-1$
+	public static final String IMG_TOOL_PREFS = NAME_PREFIX + "prefs.png"; //$NON-NLS-1$
+
 	// Define images
 	public static final ImageDescriptor DESC_OBJ_CODE = createManaged(T_OBJ,
 			IMG_OBJ_CODE);
 	public static final ImageDescriptor DESC_OBJ_PROJECT = createManaged(T_OBJ,
 			IMG_OBJ_PROJECT);
+
+	public static final ImageDescriptor DESC_TOOL_ADD = createManaged(T_TOOL,
+			IMG_TOOL_ADD);
+	public static final ImageDescriptor DESC_TOOL_EDIT = createManaged(T_TOOL,
+			IMG_TOOL_EDIT);
+	public static final ImageDescriptor DESC_TOOL_DELETE = createManaged(
+			T_TOOL, IMG_TOOL_DELETE);
+	public static final ImageDescriptor DESC_TOOL_UP = createManaged(T_TOOL,
+			IMG_TOOL_UP);
+	public static final ImageDescriptor DESC_TOOL_DOWN = createManaged(T_TOOL,
+			IMG_TOOL_DOWN);
+	public static final ImageDescriptor DESC_TOOL_PREFS = createManaged(T_TOOL,
+			IMG_TOOL_PREFS);
 
 	public static Image get(String key) {
 		return PLUGIN_REGISTRY.get(key);

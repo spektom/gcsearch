@@ -96,6 +96,7 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 	private Action showPreviousAction;
 	private ExpandAllAction expandAllAction;
 	private CollapseAllAction collapseAllAction;
+	private Action configureAction;
 	private QueryListener queryListener;
 	private Map<GCFile, File> openedFiles;
 	private Map<GCFile, Integer> openedFilesRefCnt;
@@ -110,6 +111,7 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 		copyToClipboardAction = new CopyToClipboardAction();
 		expandAllAction = new ExpandAllAction();
 		collapseAllAction = new CollapseAllAction();
+		configureAction = new ConfigureSearchAction();
 	}
 
 	public void createControl(Composite parent) {
@@ -235,6 +237,8 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 				expandAllAction);
 		tbm.appendToGroup(IContextMenuConstants.GROUP_VIEWER_SETUP,
 				collapseAllAction);
+		tbm.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES,
+				configureAction);
 	}
 
 	public Object getUIState() {
