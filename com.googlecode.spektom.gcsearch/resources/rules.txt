@@ -12,7 +12,7 @@
 # Use %FILE% placeholder for specifying file name inside of replacement.
 #
 
-.*(\.gz|\.bz2|\.tar|\.zip)				==
+.*(\.gz|\.bz2|\.tar|\.zip|\.tgz|\.tbz2)	==
 (http://hg\..*)							==$1/raw-file/tip/%FILE%
 git://github\.com/(.*)\.git				==http://github.com/$1/raw/master/%FILE%
 git://android\.git\.kernel\.org/(.*)	==http://android.git.kernel.org/?p=$1;a=blob_plain;f=%FILE%

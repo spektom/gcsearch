@@ -34,7 +34,7 @@ public enum Language {
 	JSP("jsp", "JSP", new String[] { "jsp" }),
 	LEX("lex", "Lex", new String[] { "l" }),
 	LIMBO("limbo", "Limbo", new String[] { "limbo" }),
-	LISP("lisp", "Lisp", new String[] { "lisp", "lsp", "emacs" }),
+	LISP("lisp", "Lisp", new String[] { "lisp", "lsp", "emacs", "el" }),
 	LOLCODE("lolcode", "LolCode", new String[] { "lolcode" }),
 	LUA("lua", "Lua", new String[] { "lua" }),
 	M4("m4", "m4", new String[] { "m4" }),
