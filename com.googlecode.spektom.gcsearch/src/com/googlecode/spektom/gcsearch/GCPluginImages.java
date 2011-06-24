@@ -50,6 +50,7 @@ public class GCPluginImages {
 	public static final String IMG_TOOL_UP = NAME_PREFIX + "up.gif"; //$NON-NLS-1$
 	public static final String IMG_TOOL_DOWN = NAME_PREFIX + "down.gif"; //$NON-NLS-1$
 	public static final String IMG_TOOL_PREFS = NAME_PREFIX + "prefs.png"; //$NON-NLS-1$
+	public static final String IMG_TOOL_BROWSER = NAME_PREFIX + "browser.png"; //$NON-NLS-1$
 
 	// Define images
 	public static final ImageDescriptor DESC_OBJ_CODE = createManaged(T_OBJ,
@@ -69,6 +70,8 @@ public class GCPluginImages {
 			IMG_TOOL_DOWN);
 	public static final ImageDescriptor DESC_TOOL_PREFS = createManaged(T_TOOL,
 			IMG_TOOL_PREFS);
+	public static final ImageDescriptor DESC_TOOL_BROWSER = createManaged(
+			T_TOOL, IMG_TOOL_BROWSER);
 
 	public static Image get(String key) {
 		return PLUGIN_REGISTRY.get(key);

@@ -97,6 +97,7 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 	private ExpandAllAction expandAllAction;
 	private CollapseAllAction collapseAllAction;
 	private Action configureAction;
+	private OpenInBrowserAction openInBrowserAction;
 	private QueryListener queryListener;
 	private Map<GCFile, File> openedFiles;
 	private Map<GCFile, Integer> openedFilesRefCnt;
@@ -112,6 +113,7 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 		expandAllAction = new ExpandAllAction();
 		collapseAllAction = new CollapseAllAction();
 		configureAction = new ConfigureSearchAction();
+		openInBrowserAction = new OpenInBrowserAction();
 	}
 
 	public void createControl(Composite parent) {
@@ -239,6 +241,8 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 				collapseAllAction);
 		tbm.appendToGroup(IContextMenuConstants.GROUP_PROPERTIES,
 				configureAction);
+		tbm.appendToGroup(IContextMenuConstants.GROUP_ADDITIONS,
+				openInBrowserAction);
 	}
 
 	public Object getUIState() {
@@ -253,6 +257,12 @@ public class GCSearchResultPage extends Page implements ISearchResultPage {
 
 		this.result = (GCSearchResult) result;
 		viewer.setInput(this.result);
+		if (this.result != null) {
+			openInBrowserAction.setEnabled(true);
+			openInBrowserAction.setQuery(this.result.getQuery());
+		} else {
+			openInBrowserAction.setEnabled(false);
+		}
 
 		if (uiState instanceof ISelection) {
 			implicitSelection = true;

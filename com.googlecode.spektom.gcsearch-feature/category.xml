@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.googlecode.spektom.gcsearch_1.0.1.qualifier.jar" id="com.googlecode.spektom.gcsearch" version="1.0.1.qualifier">
+      <category name="gcsearch"/>
+   </feature>
+   <category-def name="gcsearch" label="Google Code Search"/>
+</site>
