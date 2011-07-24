@@ -26,6 +26,8 @@ public class SourceDownloader {
 		String url = SourceRetrievalRules.apply(file.getPackage().getName(),
 				file.getName());
 
+		url = url.replaceAll(" ", "%20");
+
 		if (url.startsWith("http://") || url.startsWith("https://")) {
 			try {
 				String source = HttpUtils.getString(url);
