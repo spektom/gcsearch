@@ -18,11 +18,12 @@ You must have Eclipse 3.5 and greater.
 
 Usage
 ------
-1. Once installed, the feature integrates into exiting search dialog (press CTRL+H):
+
+Once installed, the feature integrates into exiting search dialog (press CTRL+H):
 
 ![Opening search dialog](https://raw.github.com/spektom/gcsearch/master/docs/usage1.png)
 
-2. Search results are opened in the standard Eclipse search results view:
+Search results are opened in the standard Eclipse search results view:
 
 ![Observing search results](https://raw.github.com/spektom/gcsearch/master/docs/usage2.png)
 
