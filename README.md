@@ -47,11 +47,11 @@ Source retrieval rule consists of two parts:
 
 To edit existing source retrieval rules, either go to Window -> Preferences -> General -> Search -> Google Code, or click on "Configure search settings" button placed in the Search Results View toolbar:
 
-![Configuring source retrieval rules](https://raw.github.com/spektom/gcsearch/master/docs/conf1.png)
+![Configuring source retrieval rules](https://raw.github.com/spektom/gcsearch/master/docs/conf1.jpg)
 
 Configuration screen:
 
-![Configuring source retrieval rules](https://raw.github.com/spektom/gcsearch/master/docs/conf2.png)
+![Configuring source retrieval rules](https://raw.github.com/spektom/gcsearch/master/docs/conf2.jpg)
 
 
 ### Examples ###
@@ -62,5 +62,4 @@ This rule helps to convert git:// URL to HTTP (for github.com host only):
 
 **Package pattern**: `git://github\.com/(.*)\.git`
 **Target URL**: `http://github.com/$1/raw/master/%FILE%`
-
 
