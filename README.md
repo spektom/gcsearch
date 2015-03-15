@@ -61,5 +61,6 @@ Configuration screen:
 This rule helps to convert git:// URL to HTTP (for github.com host only):
 
 **Package pattern**: `git://github\.com/(.*)\.git`
+
 **Target URL**: `http://github.com/$1/raw/master/%FILE%`
 
